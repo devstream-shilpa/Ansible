@@ -1,0 +1,74 @@
+---
+- name: Deploy Webserver on VM1
+  hosts: VM1
+  become: yes
+  tasks:
+    - name: Install Nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Ensure UFW is active and allow port 8080
+      ansible.builtin.shell: ufw allow 8080/tcp
+
+    - name: Create index.html for VM1
+      ansible.builtin.copy:
+        content: "<h1>Hello World from SJSU-1</h1>"
+        dest: /var/www/html/index.html
+        
+    - name: Configure Nginx to listen on port 8080
+      ansible.builtin.copy:
+        content: |
+          server {
+              listen 8080;
+              listen [::]:8080;
+              root /var/www/html;
+              index index.html index.htm;
+              server_name _;
+          }
+        dest: /etc/nginx/sites-available/default
+        mode: '0644'
+      notify: Restart Nginx
+
+  handlers:
+    - name: Restart Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+- name: Deploy Webserver on VM2
+  hosts: VM2
+  become: yes
+  tasks:
+    - name: Install Nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Ensure UFW is active and allow port 8080
+      ansible.builtin.shell: ufw allow 8080/tcp
+
+    - name: Create index.html for VM2
+      ansible.builtin.copy:
+        content: "<h1>Hello World from SJSU-2</h1>"
+        dest: /var/www/html/index.html
+        
+    - name: Configure Nginx to listen on port 8080
+      ansible.builtin.copy:
+        content: |
+          server {
+              listen 8080;
+              listen [::]:8080;
+              root /var/www/html;
+              index index.html index.htm;
+              server_name _;
+          }
+        dest: /etc/nginx/sites-available/default
+        mode: '0644'
+      notify: Restart Nginx
+
+  handlers:
+    - name: Restart Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
