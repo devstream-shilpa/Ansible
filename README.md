@@ -1,4 +1,5 @@
 Summary
+
 This work automates the deployment of web servers on two virtual machines (VMs) using Ansible. The process involved several key steps:
 
 Virtual Machine Setup: I created and configured two Ubuntu Server VMs (VM1 and VM2) in VirtualBox, ensuring they had network connectivity to my local machine.
